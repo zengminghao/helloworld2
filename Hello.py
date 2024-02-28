@@ -17,6 +17,43 @@ from streamlit.logger import get_logger
 
 LOGGER = get_logger(__name__)
 
+import google.generativeai as genai
+import os
+
+def gen(content):
+    genai.configure(api_key=st.secrets["API_KEY"])
+    
+    # Set up the model
+    generation_config = {
+        "temperature": 0.9,
+        "top_p": 1,
+        "top_k": 1,
+        "max_output_tokens": 2048,
+    }
+    
+    safety_settings = []
+    
+    model = genai.GenerativeModel(model_name="gemini-1.0-pro",
+                                generation_config=generation_config,
+                                safety_settings=safety_settings)
+    
+    prompt_parts = [
+        """Generate the outline argumentative essay.
+        Requirements:
+        1. Three arguments/points should be provided.
+        2. The analysis should be insightful.
+        3. List briefly some examples that can be used to support the argument.
+
+        The prompt is as follows:
+        """,
+        content
+    ]
+    
+    response = model.generate_content(prompt_parts)
+
+    return response.text
+
+
 
 def run():
     st.set_page_config(
@@ -29,22 +66,18 @@ def run():
     st.sidebar.success("Select a demo above.")
 
     st.markdown(
-        """
-        Streamlit is an open-source app framework built specifically for
-        Machine Learning and Data Science projects.
-        **👈 Select a demo from the sidebar** to see some examples
-        of what Streamlit can do!
-        ### Want to learn more?
-        - Check out [streamlit.io](https://streamlit.io)
-        - Jump into our [documentation](https://docs.streamlit.io)
-        - Ask a question in our [community
-          forums](https://discuss.streamlit.io)
-        ### See more complex demos
-        - Use a neural net to [analyze the Udacity Self-driving Car Image
-          Dataset](https://github.com/streamlit/demo-self-driving)
-        - Explore a [New York City rideshare dataset](https://github.com/streamlit/demo-uber-nyc-pickups)
-    """
+        """ Hello! Generator of GP Essays """
     )
+
+    st.text_input(
+        "Enter the title",
+        "",
+        key="placeholder",
+    )
+
+    resp = gen(st.session_state.placeholder)
+
+    st.write(str(resp))
 
 
 if __name__ == "__main__":
