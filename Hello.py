@@ -18,11 +18,9 @@ from streamlit.logger import get_logger
 LOGGER = get_logger(__name__)
 
 import google.generativeai as genai
-import os
+genai.configure(api_key=st.secrets["gemini_api_key"])
 
 def gen(content):
-    genai.configure(api_key=st.secrets["API_KEY"])
-    
     # Set up the model
     generation_config = {
         "temperature": 0.9,
@@ -38,7 +36,7 @@ def gen(content):
                                 safety_settings=safety_settings)
     
     prompt_parts = [
-        """Generate the outline argumentative essay.
+        """Generate the outline of an argumentative essay.
         Requirements:
         1. Three arguments/points should be provided.
         2. The analysis should be insightful.
