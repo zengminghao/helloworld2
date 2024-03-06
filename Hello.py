@@ -55,25 +55,24 @@ def gen(content):
 
 def run():
     st.set_page_config(
-        page_title="Hello",
+        page_title="My Example 0",
         page_icon="👋",
     )
 
-    st.write("# Welcome to Streamlit! 👋")
-
-    st.sidebar.success("Select a demo above.")
-
-    st.markdown(
-        """ Hello! Generator of GP Essays """
-    )
-
+    st.write("# Welcome to GP Essay Helper! 👋")
+    st.sidebar.success("Select a demo.")
+    st.markdown("""Hello! I help to generate outlines of GP Essays""")
+    
     st.text_input(
-        "Enter the title",
+        "Enter the question",
         "",
         key="placeholder",
     )
-
-    resp = gen(st.session_state.placeholder)
+    input_text = st.session_state.placeholder
+    if input_text.strip() == "":
+        resp = "Please enter the question"
+    else:
+        resp = gen(input_text)
 
     st.write(str(resp))
 
